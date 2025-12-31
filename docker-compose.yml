@@ -1,29 +1,28 @@
 version: '3.8'
 
 services:
-  # 1. MongoDB (Hidden safely inside Docker)
+  # 1. MongoDB
   mongo:
     image: mongo:latest
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: secretpassword
+      # We pull these values from the .env file now
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
       - mongo-data:/data/db
 
-  # 2. Go Backend (Exposed to the world)
+  # 2. Go Backend
   app:
-    build: .  # Looks for the Dockerfile in the current folder
+    build: .
     ports:
       - "8080:8080"
     restart: always
     environment:
-      # Connect to mongo service defined above
-      - MONGO_URI=mongodb://admin:secretpassword@mongo:27017
-      # Your secret password for adding posts
-      - ADMIN_SECRET=mySuperSecretPassword123
-      # IMPORTANT: If your frontend is on Vercel/Netlify, set mode to release
-      - GIN_MODE=release
+      # We pull these values from the .env file now
+      MONGO_URI: ${MONGO_URI}
+      ADMIN_SECRET: ${ADMIN_SECRET}
+      GIN_MODE: release
     depends_on:
       - mongo
 
