@@ -2,6 +2,10 @@ package routes
 
 import (
 	"blog-backend/internal/handlers"
+	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,15 +14,13 @@ import (
 
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// OLD: adminSecret := os.Getenv("ADMIN_SECRET")
-
-		// NEW: Hardcode it for testing
-		adminSecret := "mySuperSecretPassword123"
-
-		clientToken := c.GetHeader("X-Admin-Token")
-
-		if adminSecret == "" || clientToken != adminSecret {
-			c.AbortWithStatusJSON(401, gin.H{"error": "Unauthorized: Invalid or missing API Key"})
+		token := c.GetHeader("Authorization")
+		expected := "Bearer " + os.Getenv("ADMIN_SECRET")
+		fmt.Println("Received token:", token)
+		fmt.Println("Expected token:", expected)
+		if token != expected {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized: Invalid or missing API Key"})
+			c.Abort()
 			return
 		}
 		c.Next()
