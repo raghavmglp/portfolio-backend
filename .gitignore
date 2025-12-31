@@ -1,0 +1,14 @@
+# Secrets
+.env
+*.pem
+*.key
+id_rsa
+
+# OS & Editor junk
+.DS_Store
+.idea/
+.vscode/
+
+# Build binaries
+server
+main.exe
