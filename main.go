@@ -28,7 +28,7 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	s
+
 	routes.RegisterPostRoutes(r, postHandler)
 
 	r.Run(":8080")
